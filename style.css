@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial';
+}
+
+#search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  top: 0;
+  left: 0;
+}
+
+#content {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 60px);
+  top: 60px;
+  left: 0;
+  overflow: auto;
+}
+
+#input {
+  display: flex;
+  width: calc(100% - 40px);
+  height: 45px;
+  background-color: #eee;
+  border-radius: 10px;
+  padding: 10px;
+  border: solid 1px;
+  border-color: #cacaca;
+}
+
+#songs {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.song {
+  display: flex;
+  width: calc(100% - 40px);
+  height: 150px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.thumbnail {
+  height: 140px;
+}
+
+.details  {
+  width: calc(100% - 250px);
+  margin: 10px;
+  overflow: hidden;
+}
+
+.like {
+  display: flex;
+  flex-direction: column;
+}
+
+.like img {
+  width: 50px;
+  background-color: #f5fbff;
+  border-radius: 10px;
+  box-shadow: #cacaca 0px 0px 3px;
+  cursor: pointer;
+}
+
+.count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 50px;
+  height: 50px;
+  background-color: #f7fff5;
+  border-radius: 10px;
+  box-shadow: #cacaca 0px 0px 3px;
+  font-size: 30px;
+  font-family: 'Roboto';
+}
+
+.id_holder {
+  display: none;
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PlayList PT(SI) G.Eiffel</title>
+    <link rel="stylesheet" href="style">
+  </head>
+  <body>
+    <div id="search">
+      <input type="text" id="input" placeholder="Put the video url here !">
+    </div>
+    <div id="content">
+      <div id="songs"></div>
+    </div>
+  </body>
+  <script>
+    window.onload = () => {
+      // Request the song list
+      getList();
+    }
+
+    let input = document.getElementById("input");
+    let songs = document.getElementById("songs");
+
+    input.addEventListener('keyup', (event) => {
+      if (event.keyCode === 13) {
+        if (input.value.trim() == "") {
+          displayDefault();
+        }
+        search(input.value);
+      }
+    })
+
+    function search(q) {
+      if (q == "sync") {
+        window.open("playlist", '_blank').focus();
+        return
+      }
+      var xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        try {
+          var result = JSON.parse(xhr.response);
+          if (result.success) {
+            getList();
+          } else {
+            if (result.error != null) {
+              alert(result.error);
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      xhr.open("post", "/songs", true);
+      xhr.send(q);
+    }
+
+    function getList() {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        try {
+          var result = JSON.parse(xhr.response);
+          if (result.success) {
+            // Update List
+            songs.innerHTML = "";
+            var list = JSON.parse(result.songs);
+            for (var i in list) {
+              songs.innerHTML += `
+                <span class="song">
+                  <img class="thumbnail" src="`+list[i].img+`"/>
+                  <span class="details"><strong>`+list[i].title+`</strong><br />`+list[i].desc+`</span>
+                  <span class="like">
+                    <img class="send_like" src="/unliked"/>
+                    <div class="count">`+list[i].like+`</div>
+                    <div class="id_holder">`+list[i].id+`</div>
+                  </span>
+                </span>
+              `
+            }
+            refreshListener();
+          } else {
+            alert("An unknow error has occured, please try.");
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      xhr.open("get", "/list", true);
+      xhr.send();
+    }
+
+    function sendLike(q, state) {
+      var xhr = new XMLHttpRequest();
+      xhr.onload = () => {
+        try {
+          var result = JSON.parse(xhr.response);
+          if (!result.success) {
+            alert("An unknow error has occured, please try.");
+            return false
+          } else {
+            return true
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      xhr.open("post", "/like", true);
+      xhr.send(state+q);
+    }
+
+    function refreshListener() {
+      var elem = document.getElementsByClassName("send_like");
+      var ids = document.getElementsByClassName("id_holder");
+      var counts = document.getElementsByClassName("count");
+      for (var i = 0; i < elem.length; i++) {
+        (function(el, id, count) {
+          elem[i].addEventListener("click", () => {
+            if (el.src.includes("/unliked")) {
+              el.src = "/liked";
+              count.innerHTML = parseInt(count.innerHTML)+1;
+              sendLike(id.innerHTML, "like")
+            } else {
+              el.src = "/unliked";
+              count.innerHTML = parseInt(count.innerHTML)-1;
+              sendLike(id.innerHTML, "unlike")
+            }
+          });
+        })(elem[i], ids[i], counts[i])
+      }
+    }
+  </script>
+</html>
